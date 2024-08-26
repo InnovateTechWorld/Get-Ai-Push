@@ -3,9 +3,11 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import NoProductHistoryScreen from '../screens/NoProductHistoryScreen';
+import HomePage from '../screens/HomeScreen';
 import ScannerScreen from '../screens/ScannerScreen';
 import Chatbot from '../screens/Chatbot';
 import UploadScreen from '../screens/UploadScreen';
+import AccountSettingsScreen from '../screens/AccountSettingsScreen';
 import SettingsScreen from '../screens/Settings';
 import CustomTabBarButton from '../components/CustomTabBarButton';
 import { useNavigation } from '@react-navigation/native';
@@ -52,7 +54,7 @@ const TabNavigator = () => {
       >
         <Tab.Screen
           name="Home"
-          component={NoProductHistoryScreen}
+          component={HomePage}
           options={{ headerShown: false }}
         />
         <Tab.Screen
@@ -80,7 +82,7 @@ const TabNavigator = () => {
         />
         <Tab.Screen
           name="Profile"
-          component={NoProductHistoryScreen}
+          component={AccountSettingsScreen}
           options={{ headerShown: false }}
         />
       </Tab.Navigator>

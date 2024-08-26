@@ -5,9 +5,8 @@ import {
   StyleSheet,
   Switch,
   TouchableOpacity,
-  Image,
   Modal,
-  ScrollView
+  ScrollView,
 } from 'react-native';
 import axios from 'axios';
 import UserContext from '../context/UserContext';
@@ -17,28 +16,28 @@ const SettingsScreen = () => {
   const { user, setUser } = useContext(UserContext);
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
   const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(false);
-  const [language, setLanguage] = useState('English');
+  const [language, setLanguage] = useState(user.preferred_language || 'English');
   const [isLanguagePickerVisible, setIsLanguagePickerVisible] = useState(false);
 
-  const toggleNotifications = () => setIsNotificationsEnabled(prevState => !prevState);
-  const toggleDarkMode = () => setIsDarkModeEnabled(prevState => !prevState);
+  const toggleNotifications = () =>
+    setIsNotificationsEnabled((prevState) => !prevState);
+  const toggleDarkMode = () => setIsDarkModeEnabled((prevState) => !prevState);
 
   const handleLanguageChange = async (selectedLanguage) => {
     setLanguage(selectedLanguage);
-    setUser((prevUser) => ({ ...prevUser, preferred_language: selectedLanguage }));
+    setUser((prevUser) => ({
+      ...prevUser,
+      preferred_language: selectedLanguage,
+    }));
 
-    const { user_id, email, user_name, password, phone_no, country } = user; // Ensure these fields are available in your user context
+    const { user_id } = user;
 
     try {
-      const response = await axios.patch(`${BASEURL}/get-ai-service/users/update-user-preference`, 
+      const response = await axios.patch(
+        `${BASEURL}/users/update-user-preference`,
         {
           user_id,
-          email,
-          user_name,
-          password,
-          phone_no,
-          country,
-          preferred_language: selectedLanguage
+          preferred_language: selectedLanguage,
         }
       );
 
@@ -48,7 +47,11 @@ const SettingsScreen = () => {
         console.error('Failed to update language preference');
       }
     } catch (error) {
-      console.error('Error updating language preference:', error);
+      if (error.response) {
+        console.error('Error updating language preference:', error.response.data);
+      } else {
+        console.error('Error updating language preference:', error.message);
+      }
     }
     setIsLanguagePickerVisible(false);
   };
@@ -58,16 +61,21 @@ const SettingsScreen = () => {
       <Text style={styles.title}>Settings</Text>
       <View style={styles.settingItem}>
         <Text style={styles.settingText}>Notifications</Text>
-        <Switch value={isNotificationsEnabled} onValueChange={toggleNotifications} />
+        <Switch
+          value={isNotificationsEnabled}
+          onValueChange={toggleNotifications}
+        />
       </View>
       <View style={styles.settingItem}>
         <Text style={styles.settingText}>Account & Security</Text>
       </View>
       <View style={styles.settingItem}>
         <Text style={styles.settingText}>Languages</Text>
-        <TouchableOpacity style={styles.picker} onPress={() => setIsLanguagePickerVisible(true)}>
+        <TouchableOpacity
+          style={styles.picker}
+          onPress={() => setIsLanguagePickerVisible(true)}
+        >
           <Text>{language}</Text>
-         
         </TouchableOpacity>
       </View>
       <View style={styles.settingItem}>
@@ -81,31 +89,33 @@ const SettingsScreen = () => {
       <Modal visible={isLanguagePickerVisible} animationType="slide" transparent>
         <View style={styles.modalContainer}>
           <View style={styles.languagePicker}>
-            <TouchableOpacity onPress={() => setIsLanguagePickerVisible(false)}>
-             
+            <TouchableOpacity
+              onPress={() => setIsLanguagePickerVisible(false)}
+            >
+              <Text style={styles.languageOption}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLanguageChange('English')}>
+            <TouchableOpacity onPress={() => handleLanguageChange('EN')}>
               <Text style={styles.languageOption}>English</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLanguageChange('French')}>
+            <TouchableOpacity onPress={() => handleLanguageChange('FR')}>
               <Text style={styles.languageOption}>French</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLanguageChange('Swahili')}>
+            <TouchableOpacity onPress={() => handleLanguageChange('SW')}>
               <Text style={styles.languageOption}>Swahili</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLanguageChange('Zulu')}>
+            <TouchableOpacity onPress={() => handleLanguageChange('ZU')}>
               <Text style={styles.languageOption}>Zulu</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLanguageChange('Hausa')}>
+            <TouchableOpacity onPress={() => handleLanguageChange('HA')}>
               <Text style={styles.languageOption}>Hausa</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLanguageChange('Oromo')}>
+            <TouchableOpacity onPress={() => handleLanguageChange('OR')}>
               <Text style={styles.languageOption}>Oromo</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLanguageChange('Amharic')}>
+            <TouchableOpacity onPress={() => handleLanguageChange('AM')}>
               <Text style={styles.languageOption}>Amharic</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLanguageChange('Twi')}>
+            <TouchableOpacity onPress={() => handleLanguageChange('TW')}>
               <Text style={styles.languageOption}>Twi</Text>
             </TouchableOpacity>
           </View>
@@ -142,11 +152,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  chevron: {
-    width: 12.66,
-    height: 6.33,
-    marginLeft: 10,
-  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -159,11 +164,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
-  },
-  doneIcon: {
-    height: 20,
-    width: 20,
-    alignSelf: 'flex-end',
   },
   languageOption: {
     marginVertical: 10,
