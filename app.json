@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "get-ai",
+    "slug": "get-ai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "permissions": [
+        "CAMERA"
+      ]
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff",
+        "permissions": [
+          "CAMERA",
+          "INTERNET", 
+          "ACCESS_NETWORK_STATE"
+        ]
+      },
+      "package": "com.steveazo.getai",
+      "networkSecurityConfig": "<domain-config cleartextTrafficPermitted=\"true\" />",
+      "usesCleartextTraffic": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2e680c45-74cb-4eb5-b60d-4435fe7291c7"
+      }
+    }
+  }
+}
