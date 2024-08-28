@@ -34,7 +34,7 @@ const AppNavigator = () => {
 
   return (
     <Stack.Navigator initialRouteName="OnboardingScreen">
-      {!user ? (
+      {/* {!user ? (
         <>
           <Stack.Screen
             name="OnboardingScreen"
@@ -72,13 +72,13 @@ const AppNavigator = () => {
             options={{ headerShown: false }}
           />
         </>
-      ) : (
+      ) : ( */}
         <Stack.Screen
           name="DrawerNavigator"
           component={DrawerNavigator}  // Use DrawerNavigator for authenticated users
           options={{ headerShown: false }}
         />
-      )}
+      {/* )} */}
     </Stack.Navigator>
   );
 };

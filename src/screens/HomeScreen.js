@@ -1,6 +1,90 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, Touchable } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Svg, { Path } from 'react-native-svg';
+/**Different card types imported for the different types of sections**/
+import WideCard from '../components/WideCard';
+import NarrowCard from '../components/NarrowCard';
+import MediumCard from '../components/MediumCard';
+// import LinearGradient from 'react-native-linear-gradient';
 
+/** Styling at the start, for scope purposes */
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 20,
+    paddingTop: 0,
+  },
+  header: {
+    position: 'sticky',
+    top: 0,
+    left: 0,
+    backgroundColor: 'white',
+    zIndex: 1,
+    height: 80,
+    display: 'flex',
+    justifyContent: 'center',
+  }
+  ,
+  headerText: {
+    fontSize: '2.0em',
+    fontWeight: '700',
+    color: '#daa163',
+    marginLeft: 20,
+  },
+  section: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#15718e',
+    marginBottom: 10,
+  },
+  sponsoredTitle: {
+    color: '#daa163',
+  },
+  productsRow: {
+    flexDirection: 'row',
+  },
+  productContainer: {
+    alignItems: 'center',
+    width: '48%',
+    marginBottom: 20,
+  },
+  svgStyle: {
+    position: 'sticky',
+    bottom: 0,
+    left: 0,
+    width: '101%',
+    height: 80,
+    zIndex: 1,
+  }
+});
+
+
+
+
+/** an array of objects that represent each
+ * section, in each object the following data/properties are required:
+ *  - section: which has the section type string
+ *  - items: an array of all the products in that section
+ *    each item has objects that represent a product with the
+ *    following properties:
+ *      # id: product id
+ *      # name: name of the product
+ *      # brand: Brand of the product
+ *      # img: location of the image associated with that product
+ *        in this case the image are in the asset/image/product images/
+ *        directory which is imported using require
+ * 
+ *  the cards are rendered by mapping through this array
+ * **/
+
+
+/******** Array starts Here *********/
 const products = [
   {
     section: 'Popular Today',
@@ -9,18 +93,43 @@ const products = [
         id: 1,
         name: 'Body Cleaner',
         brand: 'Grown Alchemist',
-        
+        img: require('../../assets/images/product images/Grown.jpg'),
       },
       {
         id: 2,
         name: 'Light blue perfume',
         brand: 'Dolce & Gabanna',
-        
+        img: require('../../assets/images/product images/Dolce.jpg'),
+      },
+    ],
+  },
+  {
+    section: 'African Made',
+    styling: styles.african,
+    items: [
+      {
+        id: 11,
+        name: 'Face cleanser',
+        brand: 'Curology',
+        img: require('../../assets/images/product images/Dolce.jpg'),
+      },
+      {
+        id: 12,
+        name: 'Restorative Hair Mask',
+        brand: 'Act+',
+        img: require('../../assets/images/product images/Grown.jpg'),
+      },
+      {
+        id: 13,
+        name: 'Potatoe Chips',
+        brand: 'Pringles',
+        img: require('../../assets/images/product images/Dolce.jpg'),
       },
     ],
   },
   {
     section: 'Sponsored',
+    styling: styles.sponsored,
     items: [
       {
         id: 3,
@@ -50,6 +159,7 @@ const products = [
   },
   {
     section: 'Latest Additions',
+    styling: styles.latest,
     items: [
       {
         id: 7,
@@ -73,101 +183,79 @@ const products = [
         id: 10,
         name: 'Face cleanser',
         brand: 'Curology',
-        
-      },
-    ],
-  },
-  {
-    section: 'African Made',
-    items: [
-      {
-        id: 11,
-        name: 'Face cleanser',
-        brand: 'Curology',
-        
-      },
-      {
-        id: 12,
-        name: 'Restorative Hair Mask',
-        brand: 'Act+',
-        
-      },
-      {
-        id: 13,
-        name: 'Potatoe Chips',
-        brand: 'Pringles',
-        
       },
     ],
   },
 ];
+/********** Array Ends Here **********/
+
+
 
 const HomePage = () => {
   return (
-    <ScrollView style={styles.container}>
-      {products.map((category, categoryIndex) => (
-        <View key={categoryIndex} style={styles.section}>
-          <Text style={[styles.sectionTitle, category.section === 'Sponsored' && styles.sponsoredTitle]}>
-            {category.section}
-          </Text>
-          <View style={styles.productsRow}>
-            {category.items.map((product) => (
-              <View key={product.id} style={styles.productContainer}>
-                <Image source={product.img} style={styles.productImage} />
-                <Text style={styles.productBrand}>{product.brand}</Text>
-                <Text style={styles.productName}>{product.name}</Text>
-              </View>
-            ))}
+    <ScrollView>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>GetAI</Text>
+      </View>
+      <View style={styles.container}>
+        {products.map((category, categoryIndex) => (
+          <View key={categoryIndex} style={styles.section}>
+            <Text style={[styles.sectionTitle, category.section === 'Sponsored' && styles.sponsoredTitle]}>
+              {category.section}
+            </Text>
+            <ScrollView 
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+              style={styles.productsRow}>
+              {category.items.map((product) => {
+                switch (category.section){
+                  case 'Popular Today':
+                    return (
+                    <WideCard
+                      id={product.id}
+                      name={product.name}
+                      brand={product.brand}
+                      img={product.img}
+                    ></WideCard>)
+                  case 'African Made':
+                    return (
+                    <NarrowCard
+                      id={product.id}
+                      name={product.name}
+                      brand={product.brand}
+                      img={product.img}
+                  ></NarrowCard>)
+                  default:
+                    return (
+                    <MediumCard
+                      id={product.id}
+                      name={product.name}
+                      brand={product.brand}
+                      img={product.img}
+                    ></MediumCard>)
+                }
+              }
+              )}
+            </ScrollView>
           </View>
-        </View>
-      ))}
+        ))}
+      </View>
+      {/*an SVG that serves as a background for the tabbar with transparent background */}
+      <Svg
+         width="101%"
+         height="80"
+         viewBox="0 0 402 66"
+         style={styles.svgStyle}
+        >
+          <Path
+            fill="#15718e"
+            d="M165.826 28.399C157.947 13.6652 145.337 0 128.629 0H-1V75H403V0H267.368C250.661 0 238.051 13.6628 230.174 28.396C221.757 44.1407 208.274 50 198 50C187.727 50 174.243 44.1415 165.826 28.399Z"
+          />
+      </Svg>
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#15718eff',
-    marginBottom: 10,
-  },
-  sponsoredTitle: {
-    color: '#daa163ff',
-  },
-  productsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  productContainer: {
-    alignItems: 'center',
-    width: '48%',
-    marginBottom: 20,
-  },
-  productImage: {
-    width: '100%',
-    height: 180,
-    borderRadius: 15,
-    marginBottom: 10,
-  },
-  productBrand: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#ffffff',
-  },
-  productName: {
-    fontSize: 10,
-    color: '#ffffff',
-  },
-});
+
 
 export default HomePage;
